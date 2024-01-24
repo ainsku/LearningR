@@ -1,8 +1,24 @@
 ---
 title: "Reproducible documents"
-author: "Aino Peltonen"
+author: "Aino R. Peltonen"
 format: html
 ---
+- Aino R. Peltonen, MSc.
+- PhD Fellow, Anne Loft's groups, FGM, BMB, SDU
+- Affiliation NNFC at Broad Institute
+
+# Intro
+In this thesis **we** will study *how* adipose tissue and liver communicate in obesity.
+
+# Methods and Results
+There's something light about *wet lab* but the main emphasis will be in **computational tools**.
+
+## Analysis
+We analyzed **so** much.
+
+# Discussion
+And then we have some *deep* remarks of biology and how our findings take science **forward**.
+
 ```{r setup}
 #| message: false
 #| warning: false
