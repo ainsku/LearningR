@@ -1,4 +1,4 @@
-Aino Peltonen - MASLD progression
+Aino Peltonen - MASLD progression    | Why did it originally write it here?
 
 Second day
 
