@@ -62,21 +62,21 @@ NHANES_small %>%
 filter(NHANES_small, phys_active == "No")
 
 NHANES_small %>%
-    filter(phys_active == "No")
+  filter(phys_active == "No")
 
 # Participants who are physically active
 NHANES_small %>%
-    filter(phys_active != "No")
+  filter(phys_active != "No")
 
 # Participants who have BMI equal to 25
 NHANES_small %>%
-    filter(bmi == 25)
+  filter(bmi == 25)
 NHANES_small %>%
-    filter(bmi == 25 & phys_active != "No")
+  filter(bmi == 25 & phys_active != "No")
 NHANES_small %>%
-    filter(pregnant_now == "Yes")
+  filter(pregnant_now == "Yes")
 NHANES_small %>%
-    filter(pregnant_now == "Yes" & phys_active == "No")
+  filter(pregnant_now == "Yes" & phys_active == "No")
 
 # Logic operators
 TRUE & TRUE
@@ -89,58 +89,106 @@ FALSE | FALSE
 
 # When BMI is 25 OR phys_active is No
 NHANES_small %>%
-    filter(bmi == 25 | phys_active == "No")
+  filter(bmi == 25 | phys_active == "No")
 
 NHANES_small %>%
-    filter(phys_active == "Yes") %>%
-    filter(bmi == 25 | phys_active == "No")
+  filter(phys_active == "Yes") %>%
+  filter(bmi == 25 | phys_active == "No")
 
 # Arranging the rows ------------------------------------------------------
 
 NHANES_small %>%
-    arrange(age)
+  arrange(age)
 NHANES_small %>%
-    arrange(education) %>%
-    select(education)
+  arrange(education) %>%
+  select(education)
 NHANES_small %>%
-    arrange(desc(age)) %>%
-    select(age)
+  arrange(desc(age)) %>%
+  select(age)
 NHANES_small %>%
-    arrange(age, education)
+  arrange(age, education)
 NHANES_small %>%
-    arrange(desc(age), education)
+  arrange(desc(age), education)
 NHANES_small %>%
-    arrange(desc(age), desc(education))
+  arrange(desc(age), desc(education))
 
 # Transform or add columns ------------------------------------------------
 
 NHANES_small %>%
-    mutate(age = age * 12)
+  mutate(age = age * 12)
 NHANES_small %>%
-    mutate(age = age * 12,
-           logged_bmi = log(bmi)) %>%
-    select(age, logged_bmi)
+  mutate(
+    age = age * 12,
+    logged_bmi = log(bmi)
+  ) %>%
+  select(age, logged_bmi)
 
 NHANES_small %>%
-    mutate(
-        old = if_else(age >= 30, "Yes", "No")
-    ) %>%
-    select(old)
+  mutate(
+    old = if_else(age >= 30, "Yes", "No")
+  ) %>%
+  select(old)
 
 # Exercise 7.12 -----------------------------------------------------------
 
 # 1. BMI between 20 and 40 with diabetes
 NHANES_small %>%
-    # Format should follow: variable >= number or character
-    filter(bmi >= 20 & bmi <= 40 & diabetes == "Yes")
+  # Format should follow: variable >= number or character
+  filter(bmi >= 20 & bmi <= 40 & diabetes == "Yes")
 
 # Pipe the data into mutate function and:
 nhanes_modified <- NHANES_small %>% # Specifying dataset
-    mutate(
-        # 2. Calculate mean arterial pressure
-        mean_arterial_pressure = ((2 * bp_dia_ave) + bp_sys_ave)/3,
-        # 3. Create young_child variable using a condition
-        young_child = if_else(age <= 6, "Yes", "No")
-    )
+  mutate(
+    # 2. Calculate mean arterial pressure
+    mean_arterial_pressure = ((2 * bp_dia_ave) + bp_sys_ave) / 3,
+    # 3. Create young_child variable using a condition
+    young_child = if_else(age <= 6, "Yes", "No")
+  )
 
 nhanes_modified
+
+# Calculating summary statistics ------------------------------------------
+
+NHANES_small %>%
+    summarise(max_bmi = max(bmi, na.rm = TRUE))
+
+results_min_max_bmi <- NHANES_small %>%
+    summarise(max_bmi = max(bmi, na.rm = TRUE),
+              min_bmi = min(bmi, na.rm = TRUE))
+
+# Summary statistics by a group -------------------------------------------
+
+NHANES_small %>%
+    group_by(diabetes) %>%
+    summarise(mean_age = mean(age, na.rm = TRUE),
+              mean_bmi = mean(bmi, na.rm = TRUE))
+
+NHANES_small %>%
+    filter(!is.na(diabetes)) %>%
+    group_by(diabetes) %>%
+    summarise(mean_age = mean(age, na.rm = TRUE),
+              mean_bmi = mean(bmi, na.rm = TRUE))
+
+NHANES_small %>%
+    filter(!is.na(diabetes)) %>%
+    group_by(diabetes, phys_active) %>%
+    summarise(mean_age = mean(age, na.rm = TRUE),
+              mean_bmi = mean(bmi, na.rm = TRUE))
+
+NHANES_small %>%
+    filter(!is.na(diabetes)) %>%
+    group_by(diabetes, phys_active) %>%
+    summarise(mean_age = mean(age, na.rm = TRUE),
+              mean_bmi = mean(bmi, na.rm = TRUE))
+
+results_mean_age_mean_bmi_diabetes <- NHANES_small %>%
+    filter(!is.na(diabetes)) %>%
+    group_by(diabetes, phys_active) %>%
+    summarise(mean_age = mean(age, na.rm = TRUE),
+              mean_bmi = mean(bmi, na.rm = TRUE)) %>%
+    ungroup() # group_by creates meta data that can cause problems later
+              # down the line and adding ungroup() helps with that
+
+# Saving data set as files -------------------------------------------------
+
+readr::write_csv(NHANES_small, here::here("data/NHANES_small.csv"))
