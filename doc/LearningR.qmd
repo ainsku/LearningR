@@ -1,0 +1,37 @@
+---
+title: "Reproducible documents"
+author: "Aino Peltonen"
+format: html
+---
+```{r setup}
+#| message: false
+#| warning: false
+#| echo: false
+library(tidyverse)
+library(NHANES)
+nhanes_small <- read_csv(here::here("data/NHANES_small.csv"))
+```
+
+```{r}
+nhanes_small <- select(nhanes_small, age, sex, bmi, diabetes, phys_active, bp_sys_ave, bp_dia_ave, education)
+nhanes_small
+```
+
+
+```{r}
+2+2
+```
+# Table of results
+```{r}
+nhanes_small %>% 
+    filter(!is.na(diabetes)) %>% 
+    group_by(diabetes, education) %>% 
+    summarise(
+        mean_age = round(mean(age, na.rm = TRUE), 2),
+        mean_bmi = mean(bmi, na.rm = TRUE) %>% 
+            round(3)
+    ) %>% 
+    ungroup() %>% 
+    knitr::kable(caption = "Mean values of age and BMI for education and diabetes status")
+```
+
