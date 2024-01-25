@@ -139,3 +139,47 @@ nhanes_small %>%
   ggplot(aes(x = diabetes, y = bmi)) +
   geom_violin(na.rm = TRUE)
 ```
+## Exercise to make plots with one or two variables
+
+```{r}
+library(NHANES)
+nhanes_exercise <- NHANES %>%
+  rename_with(snakecase::to_snake_case) %>%
+  rename(sex = gender)
+```
+
+```{r}
+#| label: fig-distribution-age-diabetes_age
+#| layout-ncol: 2
+#| fig-cap: "Patient age at collection and age at diagnosis"
+#| fig-subcap: 
+#|   - "Density of patient age at collection"
+#|   - "Density of patient age when diagnosed with diabetes"
+# Distribution of age
+nhanes_exercise %>% 
+  ggplot(aes(x = age)) +
+    geom_density(na.rm = TRUE)
+
+# Distribution of age at diabetes diagnosis
+nhanes_exercise %>% 
+  ggplot(aes(x = diabetes_age)) +
+    geom_density(na.rm = TRUE)
+```
+
+```{r}
+# Number of people who smoke now and are or above 20 years of age,
+# removing those with missing smoking status.
+nhanes_exercise %>% 
+  filter(age >= 20, !is.na(smoke_now)) %>% 
+  ggplot(aes(x = smoke_now)) +
+  geom_bar()
+```
+
+```{r}
+nhanes_exercise %>% 
+    mutate(mean_arterial_pressure = (bp_sys_ave + (2 * bp_dia_ave)) / 3) %>% 
+    ggplot(aes(x = bmi, y = mean_arterial_pressure)) +
+    geom_hex(na.rm = TRUE) +
+    geom_smooth()
+```
+
