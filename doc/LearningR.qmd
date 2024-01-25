@@ -79,3 +79,63 @@ nhanes_small %>%
   ) %>%
   knitr::kable(caption = "Mean values of Age and BMI for each education and diabetes status.")
 ```
+
+# Adding figures
+
+Cute cow in @fig-cow
+
+![Image by Kim Hansen from Wikimedia Commons.](Figures_files/Images/Cow.jpg){#fig-cow width="50%" height="50%"}
+
+# Plotting
+
+### One variable plot
+
+```{r}
+#| fig-cap: "Distribution of BMI"
+#| label: fig-bmi-histo
+#| message: false
+
+nhanes_small %>%
+  filter(bmi <= 60) %>%
+  ggplot(aes(x = bmi)) +
+  geom_histogram(na.rm = TRUE)
+```
+```{r}
+#| label: fig-diabetes-education
+#| fig-cap: "Count of Diabetes and Education"
+#| fig-subcap:
+#| - "Number of those with different levels of education"
+#| - "Number of those with or without diabetes"
+#| layout-ncol: 2
+
+nhanes_small %>%
+  filter(!is.na(education)) %>%
+  ggplot(aes(x = education)) +
+  geom_bar()
+
+nhanes_small %>%
+  filter(!is.na(diabetes)) %>%
+  ggplot(aes(x = diabetes)) +
+  geom_bar()
+```
+### Plotting two variables
+```{r}
+nhanes_small %>%
+  ggplot(aes(x = bmi, y = bp_sys_ave)) +
+  geom_hex(na.rm = TRUE) +
+  geom_smooth(na.rm = TRUE)
+```
+### Plotting two discrete variables
+```{r}
+nhanes_small %>%
+  filter(!is.na(education), !is.na(diabetes)) %>% # could also be &, but in this function , works like &
+  ggplot(aes(x = diabetes, fill = education)) +
+  geom_bar(position = position_dodge())
+```
+## Plotting discrete and continous variables
+```{r}
+nhanes_small %>%
+  filter(!is.na(diabetes), bmi <= 60) %>%
+  ggplot(aes(x = diabetes, y = bmi)) +
+  geom_violin(na.rm = TRUE)
+```
